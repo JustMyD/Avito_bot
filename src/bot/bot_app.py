@@ -76,10 +76,10 @@ def hello():
             chat_id = json_data['payload']['value']['chat_id']
             author_id = json_data['payload']['value']['author_id']
             if json_data['payload']['value']['type'] == 'text':
-                # message_txt = json_data['payload']['value']['content']['text']
-                # text_for_request = parse_message_txt(message_txt)
+                message_txt = json_data['payload']['value']['content']['text']
+                text_for_request = parse_message_txt(message_txt)
                 # send_message(author_id, chat_id, text_for_request)
-                print(json_data)
+                print(text_for_request)
             else:
                 text_for_request = 'Я могу отвеачть только на текстовые сообщения'
                 send_message(author_id, chat_id,
