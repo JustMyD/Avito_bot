@@ -7,7 +7,7 @@ from datetime import datetime as dt
 
 from dotenv import load_dotenv
 from flask import Flask, request, make_response
-from msg_const import ANSWERS_MAPPING, DEFAULT_ANSWER
+from .msg_const import ANSWERS_MAPPING, DEFAULT_ANSWER
 
 
 load_dotenv()
