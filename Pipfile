@@ -1,0 +1,16 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+requests = "*"
+gunicorn = "*"
+python-dotenv = "*"
+yagmail = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"

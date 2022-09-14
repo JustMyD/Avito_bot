@@ -1,0 +1,25 @@
+{
+     "access_token": "z9ca-ojNTkm5ALrUlsGO4QtUwGbuVMfPedweuQ0u",
+     "expires_in": 86400,
+     "token_type": "Bearer"
+}
+
+//{
+//  "id": "efd51061-c9cf-4a26-8fed-d9470571cac3",
+//  "version": "v2.0.0",
+//  "timestamp": 1662787568,
+//  "payload": {
+//    "type": "message",
+//    "value": {
+//      "id": "662ea62965343e9620a762967526c1e9",
+//      "chat_id": "u2i-uW4AmGT7oaAiKlVGU7FH_g",
+//      "user_id": 9482344,
+//      "author_id": 13921334,
+//      "created": 1662787567,
+//      "type": "text",
+//      "content": {
+//        "text": "Добрый день! Скидка есть?"
+//      }
+//    }
+//  }
+//}
