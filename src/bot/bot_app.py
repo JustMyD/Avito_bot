@@ -79,8 +79,7 @@ def hello():
                 # message_txt = json_data['payload']['value']['content']['text']
                 # text_for_request = parse_message_txt(message_txt)
                 # send_message(author_id, chat_id, text_for_request)
-                logging.info('%(today)s | %(message)s', {'today': current_date,
-                                                     'message': json_data})
+                print(json_data)
             else:
                 text_for_request = 'Я могу отвеачть только на текстовые сообщения'
                 send_message(author_id, chat_id,
