@@ -50,3 +50,5 @@ if __name__ == '__main__':
     auth_key = auth_response.get('access_token')
     if auth_key:
         set_webhook(auth_key)
+    else:
+        logging.error('No Authorization key was found')
