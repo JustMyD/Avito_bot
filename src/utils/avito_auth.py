@@ -25,7 +25,11 @@ def get_auth_key():
     }
     try:
         response = requests.post(uri, data=request_data)
-        json.dump(response.json(), open('auth_key.json', 'w'), indent=2)
+        cur_path = os.getcwd()
+        path_to_bot = '/Bot_projects/Avito_bot'
+        path_to_auth = '/src/utils'
+        logging.info(f'Path to current directory: "{os.getcwd()}"')
+        json.dump(response.json(), open(cur_path + path_to_bot + path_to_auth + '/auth_key.json', 'w'), indent=2)
     except Exception as e:
         logging.error(e)
 
@@ -51,4 +55,4 @@ if __name__ == '__main__':
     if auth_key:
         set_webhook(auth_key)
     else:
-        logging.error('No Authorization key was found')
+        logging.error('No Authorization key was found'
