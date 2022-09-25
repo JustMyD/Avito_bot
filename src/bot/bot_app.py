@@ -10,9 +10,7 @@ from flask import Flask, request, make_response
 from msg_const import ANSWERS_MAPPING, KEY_WORDS_MAPPING, DEFAULT_ANSWER
 
 load_dotenv()
-logging.basicConfig(filename='../../logs/avito_logger.log',
-                    filemode='a',
-                    level=logging.INFO)
+logging.basicConfig(filename='/home/www/Bot_projects/Avito_bot/logs/avito_logger.log', filemode='a', level=logging.INFO)
 app = Flask(__name__)
 
 USER_ID = os.getenv('USER_ID')
@@ -52,8 +50,13 @@ def send_info_email(error_message: str):
 
 def send_message(user_id: str, chat_id: str, message: str):
     current_date = dt.now().strftime("%Y-%m-%d, %H:%M:%S")
+    token_json = json.load(open('/home/www/Bot_projects/Avito_bot/src/utils/auth_key.json', 'r'))
+    token = token_json['access_token']
     url = f"https://api.avito.ru/messenger/v1/accounts/{user_id}/chats/{chat_id}/messages"
-    params = {
+    headers = {
+        "Authorization": f"Bearer {token}",
+    }
+    request_data = {
         "message": {
             "text": f"{message}"
         },
@@ -61,15 +64,14 @@ def send_message(user_id: str, chat_id: str, message: str):
     }
 
     try:
-        message_response = requests.post(url, json=params)
-        logging.info('%(today)s | %(message)s', {'today': current_date,
-                                                 'message': f'Message was send with response - {message_response}'})
+        message_response = requests.post(url, headers=headers, json=request_data)
+        logging.info('%(today)s | %(message)s', {'today': current_date, 'message': f'Message was send with response - {message_response}'})
     except Exception as e:
         logging.error('%(today)s | %(message)s', {'today': current_date, 'message': e})
-        # send_info_email()
+        send_info_email()
 
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['POST', 'GET'])
 def hello():
     current_date = dt.now().strftime("%Y-%m-%d, %H:%M:%S")
     if request.method == 'POST':
@@ -78,41 +80,27 @@ def hello():
         json_data = request.get_json()
         if json_data['payload']['type'] == 'message':
             chat_id = json_data['payload']['value']['chat_id']
-            author_id = json_data['payload']['value']['author_id']
+            user_id = json.data['payload']['value']['user_id']       # ID владельца аккаунта
+            author_id = json_data['payload']['value']['author_id']   # ID автора сообщения
             if json_data['payload']['value']['type'] == 'text':
-                message_txt = json_data['payload']['value']['content']['text']
-                text_for_request = parse_message_txt(message_txt)
-                send_message(author_id, chat_id, text_for_request)
-                print(text_for_request)
+                if author_id != user_id:
+                    message_txt = json_data['payload']['value']['content']['text']
+                    text_for_request = parse_message_txt(message_txt)
+                    send_message(author_id, chat_id, text_for_request)
             else:
-                text_for_request = 'Я могу отвеачть только на текстовые сообщения'
-                send_message(author_id, chat_id,
-                             text_for_request)  # Отправка сообщения о не поддерживаемом типе сообщений
+                text_for_request = 'Я могу отвечать только на текстовые сообщения'
+                send_message(author_id, chat_id, text_for_request)
         else:
-            logging.info('%(today)s | %(message)s', {'today': current_date,
-                                                     'message': 'Not message type in request'})
+            logging.info('%(today)s | %(message)s', {'today': current_date, 'message': 'Not message type in request'})
 
         logging.info('%(today)s | %(message)s', {'today': current_date, 'message': 'End handling POST request'})
-    else:
-        logging.warning('%(today)s | %(message)s', {'today': current_date,
-                                                    'message': f'Incoming request method {request.method}, not supported'})
-    return make_response()
+    elif request.method == 'GET':
+        logging.warning('%(today)s | %(message)s', {'today': current_date, 'message': f'Incoming request method {request.method}, not supported'})
+        return '<h1 style="color: blue"> Hello world! </h1>'
 
 
 if __name__ == '__main__':
-    uri = f"https://webhook.site/ccd53be3-653b-4214-aab0-c71d49e82e1a"
-    headers = {
-        "Authorization": "Bearer 6_vPhbUtSzG8JYxpYxc0LwxizL0afWORV_4vDxoG"
-    }
-    params = {
-        "message": {
-            "text": "Test_message"
-        },
-        "type": "text"
-    }
-
-    message_response = requests.post(uri, json=params)
-    print(message_response.status_code)
+    app.run(host='0.0.0.0')
     # data = {
     #     "unread_only": "true",
     #     "limit": 50
